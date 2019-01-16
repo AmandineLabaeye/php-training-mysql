@@ -5,7 +5,7 @@ include "DB.php";
 ?>
 
     <!DOCTYPE html>
-    <html>
+    <html lang="fr">
     <head>
         <meta charset="utf-8">
         <title>Ajouter une randonnée</title>
@@ -15,10 +15,18 @@ include "DB.php";
 
         h1 {
             text-align: center;
+            color: darkred;
+            text-decoration: underline;
         }
 
         form {
             text-align: center;
+            background-color: darkcyan;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            color: white;
+            border: black double 5px;
+            border-radius: 30px;
         }
 
         div {
@@ -30,16 +38,25 @@ include "DB.php";
             color: darkred;
         }
 
+        a {
+            font-size: 25px;
+            color: black;
+        }
+
     </style>
     <body>
 
+    <h1>Ajouter</h1>
+
+    <br>
+
     <div>
 
-        <a href="read.php">Liste des données</a>
+        <a href="read.php">Liste des randonnées</a>
 
     </div>
 
-    <h1>Ajouter</h1>
+    <br> <br>
 
     <form action="create.php" method="post">
 
@@ -88,35 +105,38 @@ include "DB.php";
 
 <?php
 
-function AjoutRandonne()
-{
+$name = isset($_POST["name"]) ? $_POST["name"] : NULL;
 
-    global $connexion;
+$difficulty = isset($_POST["difficulty"]) ? $_POST["difficulty"] : NULL;
 
-    if (isset($_POST['name']) != '' && $_POST['difficulty'] != '' && $_POST['distance'] != '' && $_POST['duration'] != '' && $_POST['height_difference'] != '' && isset($_POST['submit'])) {
+$distance = isset($_POST["distance"]) ? $_POST["distance"] : NULL;
 
+$duration = isset($_POST["duration"]) ? $_POST["duration"] : NULL;
 
-        $name = $_POST['name'];
+$height_difference = isset($_POST["height_difference"]) ? $_POST["height_difference"] : NULL;
 
-        $difficulty = $_POST['difficulty'];
+if (isset($_REQUEST['submit'])) {
 
-        $distance = $_POST['distance'];
+    $name = filter_var($_POST["name"], FILTER_SANITIZE_STRING) ? $_POST["name"] : "Sans titre";
 
-        $duration = $_POST['duration'];
+    $difficulty = filter_var($_POST["difficulty"], FILTER_SANITIZE_STRING) ? $_POST["difficulty"] : "Facile";
 
-        $height_difference = $_POST['height_difference'];
+    $distance = filter_var($_POST["distance"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["distance"] : 0;
 
-        $Add = $connexion->prepare("Insert into hiking (`name`, `difficulty`, `distance`, `duration`, `height_difference`) VALUES (?, ?, ?, ?, ?)");
-        $Add->bind_param("ssisi", $name, $difficulty, $distance, $duration, $height_difference);
-        $Add->execute();
-        Echo $Add->error;
-        $Add->close();
+    $duration = filter_var($_POST["duration"], FILTER_SANITIZE_STRING) ? $_POST["duration"] : "00:00";
 
-        Echo "<br><br>";
+    $height_difference = filter_var($_POST["height_difference"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["height_difference"] : 200;
 
-        Echo "<div class='Congratulations'>La randonnée a été ajoutée avec succès.</div>";
+    $Add = $connexion->prepare("Insert into hiking (`name`, `difficulty`, `distance`, `duration`, `height_difference`) VALUES (?, ?, ?, ?, ?)");
+    $Add->bind_param("ssisi", $name, $difficulty, $distance, $duration, $height_difference);
+    $Add->execute();
+    Echo $Add->error;
+    $Add->close();
 
-    }
+    Echo "<br><br>";
+
+    Echo "<div class='Congratulations'>La randonnée a été ajoutée avec succès.</div>";
+
+    header('Location: read.php');
+
 }
-
-AjoutRandonne();

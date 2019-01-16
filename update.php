@@ -17,7 +17,7 @@ $Deniveler = isset($_GET["height_difference"]) ? $_GET["height_difference"] : NU
 ?>
 
     <!DOCTYPE html>
-    <html>
+    <html lang="fr">
     <head>
         <meta charset="utf-8">
         <title>Modifier une randonnée</title>
@@ -68,11 +68,16 @@ $Deniveler = isset($_GET["height_difference"]) ? $_GET["height_difference"] : NU
         <div>
             <label for="difficulty">Difficulté
                 <select name="difficulty">
-                    <option value="très facile" <?php Echo $Difficulter == "très facile" ? 'selected' : "" ?> >Très facile</option>
+                    <option value="très facile" <?php Echo $Difficulter == "très facile" ? 'selected' : "" ?> >Très
+                        facile
+                    </option>
                     <option value="facile" <?php Echo $Difficulter == "facile" ? 'selected' : "" ?> >Facile</option>
                     <option value="moyen"<?php Echo $Difficulter == "moyen" ? 'selected' : "" ?> >Moyen</option>
-                    <option value="difficile" <?php Echo $Difficulter == "difficile" ? 'selected' : "" ?> >Difficile</option>
-                    <option value="très difficile" <?php Echo $Difficulter == "très difficile" ? 'selected' : "" ?> >Très difficile</option>
+                    <option value="difficile" <?php Echo $Difficulter == "difficile" ? 'selected' : "" ?> >Difficile
+                    </option>
+                    <option value="très difficile" <?php Echo $Difficulter == "très difficile" ? 'selected' : "" ?> >
+                        Très difficile
+                    </option>
                 </select>
             </label>
         </div>
@@ -107,11 +112,23 @@ $difficulty = isset($_POST['difficulty']) ? $_POST['difficulty'] : NULL;
 
 $distance = isset($_POST['distance']) ? $_POST['distance'] : NULL;
 
-$duration = isset($_POST['duration']) ? $_POST['duration'] : NULL;
-
 $height_difference = isset($_POST['height_difference']) ? $_POST['height_difference'] : NULL;
 
+$duration = isset($_POST['duration']) ? $_POST['duration'] : NULL;
+
 if (isset($_REQUEST["submit"])) {
+
+    $id = filter_var($_POST["id"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["id"] : 0;
+
+    $name = filter_var($_POST["name"], FILTER_SANITIZE_STRING) ? $_POST["name"] : "Sans Titre";
+
+    $difficulty = filter_var($_POST["difficulty"], FILTER_SANITIZE_STRING) ? $_POST["difficulty"] : "facile";
+
+    $distance = filter_var($_POST["distance"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["distance"] : 0;
+
+    $duration = filter_var($_POST["duration"], FILTER_SANITIZE_STRING) ? $_POST["duration"] : "00:00";
+
+    $height_difference = filter_var($_POST["height_difference"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["height_difference"] : 200;
 
     $Update = "UPDATE hiking set `name` = '$name', difficulty = '$difficulty', distance = '$distance', duration = '$duration', height_difference = '$height_difference' where id = '$id'";
 
@@ -126,4 +143,3 @@ if (isset($_REQUEST["submit"])) {
     header('Location: read.php');
 
 }
-
