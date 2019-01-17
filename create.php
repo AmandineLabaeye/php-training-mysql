@@ -2,7 +2,11 @@
 
 include "DB.php";
 
-?>
+session_start();
+
+if ($_SESSION['username']) {
+
+    ?>
 
     <!DOCTYPE html>
     <html lang="fr">
@@ -13,19 +17,13 @@ include "DB.php";
     </head>
     <style>
 
-        h1 {
-            text-align: center;
-            color: darkred;
-            text-decoration: underline;
-        }
-
         form {
             text-align: center;
-            background-color: darkcyan;
+            background-color: #a84421;
             padding-top: 30px;
             padding-bottom: 30px;
             color: white;
-            border: black double 5px;
+            border: darkred double 5px;
             border-radius: 30px;
         }
 
@@ -38,23 +36,39 @@ include "DB.php";
             color: darkred;
         }
 
-        a {
+        table {
+            margin: 0 auto;
+            border: double darkred 5px;
+        }
+
+        th {
+            background-color: #a84421;
             font-size: 25px;
-            color: black;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-weight: lighter;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+            font-size: 25px;
         }
 
     </style>
     <body>
 
-    <h1>Ajouter</h1>
+    <table>
 
-    <br>
+        <tr>
 
-    <div>
+            <th>Ajouter</th>
+            <th><a href="read.php">Liste des randonnées</a></th>
 
-        <a href="read.php">Liste des randonnées</a>
+        </tr>
 
-    </div>
+    </table>
 
     <br> <br>
 
@@ -103,40 +117,46 @@ include "DB.php";
     </body>
     </html>
 
-<?php
+    <?php
 
-$name = isset($_POST["name"]) ? $_POST["name"] : NULL;
+    $name = isset($_POST["name"]) ? $_POST["name"] : NULL;
 
-$difficulty = isset($_POST["difficulty"]) ? $_POST["difficulty"] : NULL;
+    $difficulty = isset($_POST["difficulty"]) ? $_POST["difficulty"] : NULL;
 
-$distance = isset($_POST["distance"]) ? $_POST["distance"] : NULL;
+    $distance = isset($_POST["distance"]) ? $_POST["distance"] : NULL;
 
-$duration = isset($_POST["duration"]) ? $_POST["duration"] : NULL;
+    $duration = isset($_POST["duration"]) ? $_POST["duration"] : NULL;
 
-$height_difference = isset($_POST["height_difference"]) ? $_POST["height_difference"] : NULL;
+    $height_difference = isset($_POST["height_difference"]) ? $_POST["height_difference"] : NULL;
 
-if (isset($_REQUEST['submit'])) {
+    if (isset($_REQUEST['submit'])) {
 
-    $name = filter_var($_POST["name"], FILTER_SANITIZE_STRING) ? $_POST["name"] : "Sans titre";
+        $name = filter_var($_POST["name"], FILTER_SANITIZE_STRING) ? $_POST["name"] : "Sans titre";
 
-    $difficulty = filter_var($_POST["difficulty"], FILTER_SANITIZE_STRING) ? $_POST["difficulty"] : "Facile";
+        $difficulty = filter_var($_POST["difficulty"], FILTER_SANITIZE_STRING) ? $_POST["difficulty"] : "Facile";
 
-    $distance = filter_var($_POST["distance"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["distance"] : 0;
+        $distance = filter_var($_POST["distance"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["distance"] : 0;
 
-    $duration = filter_var($_POST["duration"], FILTER_SANITIZE_STRING) ? $_POST["duration"] : "00:00";
+        $duration = filter_var($_POST["duration"], FILTER_SANITIZE_STRING) ? $_POST["duration"] : "00:00";
 
-    $height_difference = filter_var($_POST["height_difference"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["height_difference"] : 200;
+        $height_difference = filter_var($_POST["height_difference"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["height_difference"] : 200;
 
-    $Add = $connexion->prepare("Insert into hiking (`name`, `difficulty`, `distance`, `duration`, `height_difference`) VALUES (?, ?, ?, ?, ?)");
-    $Add->bind_param("ssisi", $name, $difficulty, $distance, $duration, $height_difference);
-    $Add->execute();
-    Echo $Add->error;
-    $Add->close();
+        $Add = $connexion->prepare("Insert into hiking (`name`, `difficulty`, `distance`, `duration`, `height_difference`) VALUES (?, ?, ?, ?, ?)");
+        $Add->bind_param("ssisi", $name, $difficulty, $distance, $duration, $height_difference);
+        $Add->execute();
+        Echo $Add->error;
+        $Add->close();
 
-    Echo "<br><br>";
+        Echo "<br><br>";
 
-    Echo "<div class='Congratulations'>La randonnée a été ajoutée avec succès.</div>";
+        Echo "<div class='Congratulations'>La randonnée a été ajoutée avec succès.</div>";
 
-    header('Location: read.php');
+        header('Location: read.php');
+
+    }
+
+} else {
+
+    header('Location: login.php');
 
 }

@@ -2,19 +2,23 @@
 
 include "DB.php";
 
-$ID = isset($_GET["id"]) ? $_GET["id"] : NULL;
+session_start();
 
-$Nom = isset($_GET["name"]) ? $_GET["name"] : NULL;
+if ($_SESSION["username"]) {
 
-$Difficulter = isset($_GET["difficulty"]) ? $_GET["difficulty"] : NULL;
+    $ID = isset($_GET["id"]) ? $_GET["id"] : NULL;
 
-$Distance = isset($_GET["distance"]) ? $_GET["distance"] : NULL;
+    $Nom = isset($_GET["name"]) ? $_GET["name"] : NULL;
 
-$Duree = isset($_GET["duration"]) ? $_GET["duration"] : NULL;
+    $Difficulter = isset($_GET["difficulty"]) ? $_GET["difficulty"] : NULL;
 
-$Deniveler = isset($_GET["height_difference"]) ? $_GET["height_difference"] : NULL;
+    $Distance = isset($_GET["distance"]) ? $_GET["distance"] : NULL;
 
-?>
+    $Duree = isset($_GET["duration"]) ? $_GET["duration"] : NULL;
+
+    $Deniveler = isset($_GET["height_difference"]) ? $_GET["height_difference"] : NULL;
+
+    ?>
 
     <!DOCTYPE html>
     <html lang="fr">
@@ -25,12 +29,14 @@ $Deniveler = isset($_GET["height_difference"]) ? $_GET["height_difference"] : NU
     </head>
     <style>
 
-        h1 {
-            text-align: center;
-        }
-
         form {
             text-align: center;
+            background-color: #a84421;
+            padding-top: 20px;
+            padding-bottom: 30px;
+            color: white;
+            border: darkred double 5px;
+            border-radius: 30px;
         }
 
         div {
@@ -42,15 +48,43 @@ $Deniveler = isset($_GET["height_difference"]) ? $_GET["height_difference"] : NU
             color: darkred;
         }
 
+        table {
+            margin: 0 auto;
+            border: double darkred 5px;
+        }
+
+        th {
+            background-color: #a84421;
+            font-size: 25px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-weight: lighter;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+            font-size: 25px;
+        }
+
     </style>
     <body>
 
-    <div>
+    <table>
 
-        <a href="read.php">Liste des données</a>
+        <tr>
 
-    </div>
-    <h1>Modifier</h1>
+            <th>Modifier</th>
+
+            <th><a href="read.php">Liste des données</a></th>
+
+        </tr>
+
+    </table>
+
+    <br> <br>
+
     <form action="update.php" method="post">
 
         <div>
@@ -97,49 +131,58 @@ $Deniveler = isset($_GET["height_difference"]) ? $_GET["height_difference"] : NU
                 <input type="text" name="height_difference" value="<?= $Deniveler ?> ">
             </label>
         </div>
+
+        <br>
+
         <button type="submit" name="submit">Envoyer</button>
     </form>
     </body>
     </html>
 
-<?php
+    <?php
 
-$id = isset($_POST["id"]) ? $_POST["id"] : NULL;
+    $id = isset($_POST["id"]) ? $_POST["id"] : NULL;
 
-$name = isset($_POST['name']) ? $_POST['name'] : NULL;
+    $name = isset($_POST['name']) ? $_POST['name'] : NULL;
 
-$difficulty = isset($_POST['difficulty']) ? $_POST['difficulty'] : NULL;
+    $difficulty = isset($_POST['difficulty']) ? $_POST['difficulty'] : NULL;
 
-$distance = isset($_POST['distance']) ? $_POST['distance'] : NULL;
+    $distance = isset($_POST['distance']) ? $_POST['distance'] : NULL;
 
-$height_difference = isset($_POST['height_difference']) ? $_POST['height_difference'] : NULL;
+    $height_difference = isset($_POST['height_difference']) ? $_POST['height_difference'] : NULL;
 
-$duration = isset($_POST['duration']) ? $_POST['duration'] : NULL;
+    $duration = isset($_POST['duration']) ? $_POST['duration'] : NULL;
 
-if (isset($_REQUEST["submit"])) {
+    if (isset($_REQUEST["submit"])) {
 
-    $id = filter_var($_POST["id"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["id"] : 0;
+        $id = filter_var($_POST["id"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["id"] : 0;
 
-    $name = filter_var($_POST["name"], FILTER_SANITIZE_STRING) ? $_POST["name"] : "Sans Titre";
+        $name = filter_var($_POST["name"], FILTER_SANITIZE_STRING) ? $_POST["name"] : "Sans Titre";
 
-    $difficulty = filter_var($_POST["difficulty"], FILTER_SANITIZE_STRING) ? $_POST["difficulty"] : "facile";
+        $difficulty = filter_var($_POST["difficulty"], FILTER_SANITIZE_STRING) ? $_POST["difficulty"] : "facile";
 
-    $distance = filter_var($_POST["distance"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["distance"] : 0;
+        $distance = filter_var($_POST["distance"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["distance"] : 0;
 
-    $duration = filter_var($_POST["duration"], FILTER_SANITIZE_STRING) ? $_POST["duration"] : "00:00";
+        $duration = filter_var($_POST["duration"], FILTER_SANITIZE_STRING) ? $_POST["duration"] : "00:00";
 
-    $height_difference = filter_var($_POST["height_difference"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["height_difference"] : 200;
+        $height_difference = filter_var($_POST["height_difference"], FILTER_SANITIZE_NUMBER_INT) ? $_POST["height_difference"] : 200;
 
-    $Update = "UPDATE hiking set `name` = '$name', difficulty = '$difficulty', distance = '$distance', duration = '$duration', height_difference = '$height_difference' where id = '$id'";
+        $Update = "UPDATE hiking set `name` = '$name', difficulty = '$difficulty', distance = '$distance', duration = '$duration', height_difference = '$height_difference' where id = '$id'";
 
-    global $connexion;
+        global $connexion;
 
-    $connexion->query($Update);
+        $connexion->query($Update);
 
-    Echo "<br> <br>";
+        Echo "<br> <br>";
 
-    Echo "<div class='Congratulations'>La randonnée a été upload avec succès.</div>";
+        Echo "<div class='Congratulations'>La randonnée a été upload avec succès.</div>";
 
-    header('Location: read.php');
+        header('Location: read.php');
+
+    }
+
+} else {
+
+    header('Location: login.php');
 
 }
